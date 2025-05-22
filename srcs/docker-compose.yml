@@ -1,0 +1,44 @@
+services:
+  BE:
+    container_name: express
+    build: ./requirements/BE/.
+    image: express
+    ports:
+      - "3000:3000"
+    volumes:
+      - express_data:/app/database
+    env_file:
+      - .env
+    networks:
+      - ft_transcendence
+    restart: always
+    init: true
+
+  FE:
+    container_name: nginx
+    build: ./requirements/FE/.
+    image: nginx
+    ports:
+      - "443:443"
+    depends_on:
+      - BE
+    networks:
+      - ft_transcendence
+    env_file:
+      - .env
+    restart: always
+    init: true
+
+volumes:
+  express_data:
+    name: express_data
+    driver: local
+    driver_opts:
+      device: /Users/hyunjoo/Dev/app/temp
+      o: bind
+      type: none
+
+
+networks:
+  ft_transcendence:
+    driver: bridge
